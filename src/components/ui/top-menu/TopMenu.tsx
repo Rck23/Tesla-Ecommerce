@@ -34,14 +34,14 @@ export const TopMenu = () => {
 
         <Link
           className="p-2 m-2 rounded-md  transition-all hover:bg-gray-200"
-          href="/category/woman"
+          href="/category/women"
         >
           Mujeres
         </Link>
 
         <Link
           className="p-2 m-2 rounded-md  transition-all hover:bg-gray-200"
-          href="/category/kids"
+          href="/category/kid"
         >
           Niños
         </Link>
