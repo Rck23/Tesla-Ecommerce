@@ -28,9 +28,9 @@ export default function({params}: Props) {
     'kid': 'para los pequeños de la casa',
     'unisex': 'para todos'
   }
-  // if(id === 'kids'){
-  //   notFound()
-  // }
+   if(id === 'kid'){
+     notFound()
+   }
 
   return (
     < >
