@@ -13,7 +13,7 @@ export default function Home() {
         subtitle="Todos los productos"
         className="mb-2"
       />
-
+      
       <ProductGrid
         products={products}
       />

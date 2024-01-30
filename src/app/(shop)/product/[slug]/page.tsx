@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { initialData } from '@/seed/seed';
 import { titleFont } from '@/config/fonts';
 import {  ProductMobileSlideshow, ProductSlideshow, QuantitySelector, SizeSelector } from '@/components';
+import ColorSelector from '@/components/ui/colo-selector/ColorSelector';
 
 interface Props {
   params: {
@@ -54,6 +55,8 @@ export default function ( { params }: Props ) {
         </h1>
         <p className="text-lg mb-5">${ product.price }</p>
 
+
+        <ColorSelector/>
         {/* Selector de Tallas */ }
         <SizeSelector
           selectedSize={ product.sizes[ 1 ] }
