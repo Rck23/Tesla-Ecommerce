@@ -1,52 +1,70 @@
 import { initialData } from "./seed";
-import prisma from '../lib/prisma';
+import prisma from "../lib/prisma";
 
 async function main() {
-    
-    // 1. Borrar registros previos
-    await Promise.all([
+  
+  // 1. Borrar registros previos
+  // await Promise.all( [
 
-        prisma.productImage.deleteMany(),
-        prisma.product.deleteMany(),
-        prisma.category.deleteMany(),
-    ])
+  await prisma.productImage.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.category.deleteMany();
+  // ]);
+  
+  const { categories, products } = initialData;
 
-    // categorias
 
-    const {categories, products} = initialData
 
-    // hacen lo mismo diferente sintaxis
+  //  Categorias
+  
+  // {
+  //   name: 'Shirt'
+  // }
+  const categoriesData = categories.map( (name) => ({ name }));
+  
+  await prisma.category.createMany({
+    data: categoriesData
+  });
 
-    // const categoriesData = categories.map( category => ({
-    //     name: category
-    // }))
+  
+  const categoriesDB = await prisma.category.findMany();
+  
+  const categoriesMap = categoriesDB.reduce( (map, category) => {
+    map[ category.name.toLowerCase()] = category.id;
+    return map;
+  }, {} as Record<string, string>); //<string=shirt, string=categoryID>
+  
+  
 
-    const categoriesData = categories.map( (name) => ({ name   }))
+  // Productos
 
-    await prisma.category.createMany({
-        data: categoriesData
-    }); 
+  products.forEach( async(product) => {
 
-    // Productos
+    const { type, images, ...rest } = product;
 
-    const categoriesDB = await prisma.category.findMany();
+    const dbProduct = await prisma.product.create({
+      data: {
+        ...rest,
+        categoryId: categoriesMap[type]
+      }
+    })
 
-    const categoriesMap = categoriesDB.reduce( (map, category) => {
 
-        map[category.name.toLowerCase()] = category.id; 
+    // Images
+    const imagesData = images.map( image => ({
+      url: image,
+      productId: dbProduct.id
+    }));
 
-        return map; 
-    }, {} as Record<string, string>); //<string=shirt, categoryId>
-    
+    await prisma.productImage.createMany({
+      data: imagesData
+    });
 
-    console.log('Seed Ejecutado correctamente');
-    
+  });
+
+  console.log("Seed Ejecutado correctamente");
 }
 
-
-
 (() => {
-    main(); 
-
-
+  main();
 })();
