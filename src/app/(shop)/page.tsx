@@ -1,11 +1,26 @@
-import { ProductGrid, Tittle } from "@/components";
-import { titleFont } from "@/config/fonts";
-import { initialData } from "@/seed/seed";
-import Image from "next/image";
+import { getPaginatedProductsWithImages } from "@/actions";
+import { ProductGrid, Tittle, Pagination } from "@/components";
+import { redirect } from "next/navigation";
 
-const products = initialData.products; 
 
-export default function Home() {
+interface Props{ 
+  searchParams:{ 
+    page?: string
+  }
+}
+
+export default async function Home({ searchParams }: Props) {
+
+  const page = searchParams.page ? parseInt(searchParams.page) : 1; 
+
+  const {products, currentPage, totalPages} = await getPaginatedProductsWithImages({page});
+
+  //validar que la pagina tenga productos
+  if( products.length === 0 ){
+    redirect('/');
+  }
+
+
   return (
     < >
       <Tittle
@@ -17,6 +32,8 @@ export default function Home() {
       <ProductGrid
         products={products}
       />
+
+      <Pagination totalPages={totalPages}/>
     </>
   );
 }
